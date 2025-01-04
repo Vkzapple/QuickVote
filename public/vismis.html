@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visi & Misi Gallery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gallery-container">
+        <h1 class="gallery-title">Visi & Misi Gallery</h1>
+        
+        <div class="gallery-grid">
+            <!-- OSIS Candidates -->
+            <div class="gallery-card">
+                <img src="assets/paslon1.jpeg" alt="Paslon 1 OSIS">
+                <div class="gallery-content">
+                    <h3>Abdul XI Sija & Rosyid X Tp II</h3>
+                    <div class="poster-preview">
+                        <img src="assets/poster-osis1.jpg" alt="Poster Paslon 1" class="poster-thumb">
+                        <button class="view-poster-btn" onclick="openPoster('assets/poster-osis1.jpg')">View Full Poster</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-card">
+                <img src="assets/paslon2.png" alt="Paslon 2 OSIS">
+                <div class="gallery-content">
+                    <h3>Araechpaet XI Rpl & Tasya X Dkv</h3>
+                    <div class="poster-preview">
+                        <img src="assets/poster-osis2.jpg" alt="Poster Paslon 2" class="poster-thumb">
+                        <button class="view-poster-btn" onclick="openPoster('assets/poster-osis2.jpg')">View Full Poster</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-card">
+                <img src="assets/paslon3.jpeg" alt="Paslon 3 OSIS">
+                <div class="gallery-content">
+                    <h3>Ikhsan XI Tkp II & Adam X Tkr I</h3>
+                    <div class="poster-preview">
+                        <img src="assets/poster-osis3.jpg" alt="Poster Paslon 3" class="poster-thumb">
+                        <button class="view-poster-btn" onclick="openPoster('assets/poster-osis3.jpg')">View Full Poster</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MPK Candidates -->
+            <div class="gallery-card">
+                <img src="assets/mpk1.jpeg" alt="Kandidat 1 MPK">
+                <div class="gallery-content">
+                    <h3>Rakha XI DPIB II</h3>
+                    <div class="poster-preview">
+                        <img src="assets/poster-mpk1.jpg" alt="Poster MPK 1" class="poster-thumb">
+                        <button class="view-poster-btn" onclick="openPoster('assets/poster-mpk1.jpg')">View Full Poster</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gallery-card">
+                <img src="assets/mpk2.jpeg" alt="Kandidat 2 MPK">
+                <div class="gallery-content">
+                    <h3>Kenichi XI TITL III</h3>
+                    <div class="poster-preview">
+                        <img src="assets/poster-mpk2.jpg" alt="Poster MPK 2" class="poster-thumb">
+                        <button class="view-poster-btn" onclick="openPoster('assets/poster-mpk2.jpg')">View Full Poster</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for full poster view -->
+    <div id="posterModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="posterImage">
+    </div>
+
+    <script src="gallery.js"></script>
+</body>
+</html>
