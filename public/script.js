@@ -113,6 +113,5 @@ function vote(tipe, kandidatId) {
   }
 }
 
-// Inisialisasi
 renderKandidat(kandidatOsis, "osis");
 renderKandidat(kandidatMpk, "mpk");
