@@ -38,7 +38,6 @@ const kandidatMpk = [
 const votingState = { osis: {}, mpk: {} };
 let tahapSaatIni = "osis";
 
-// Fungsi untuk mengambil data suara dari database
 async function getVoteCount() {
   try {
     const [hasilOsis, hasilMpk] = await Promise.all([
@@ -56,7 +55,6 @@ async function getVoteCount() {
   }
 }
 
-// Fungsi untuk mengirim vote ke database
 async function submitVote(tipe, nomorPaslon) {
   try {
     const response = await fetch(`/api/submit-vote`, {
