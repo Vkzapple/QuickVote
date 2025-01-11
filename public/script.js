@@ -60,6 +60,33 @@ function renderKandidat(kandidat, tipe) {
   });
 }
 
+function showThankYouPopup() {
+  const popup = document.createElement("div");
+  popup.className = "thank-you-popup";
+
+  let countdown = 5;
+  popup.innerHTML = `
+    <div class="popup-content">
+      <h2>Terimakasih sudah vote!</h2>
+      <p>Suaramu sangat berharga!</p>
+      <p class="countdown">Kembali ke halaman utama dalam <span>${countdown}</span> detik</p>
+    </div>
+  `;
+
+  document.body.appendChild(popup);
+
+  const countdownInterval = setInterval(() => {
+    countdown--;
+    const countdownSpan = popup.querySelector(".countdown span");
+    countdownSpan.textContent = countdown;
+
+    if (countdown <= 0) {
+      clearInterval(countdownInterval);
+      window.location.href = "index.html";
+    }
+  }, 1000);
+}
+
 function vote(tipe, kandidatId) {
   if (Object.keys(votingState[tipe]).length > 0) {
     alert("Anda sudah memberikan suara!");
@@ -75,65 +102,15 @@ function vote(tipe, kandidatId) {
     .forEach((btn) => {
       btn.disabled = true;
     });
-  //   rip logika
+
   if (tipe === "osis") {
     document.getElementById("tahapOsis").style.display = "none";
     document.getElementById("tahapMpk").style.display = "block";
     tahapSaatIni = "mpk";
   } else {
     document.getElementById("tahapMpk").style.display = "none";
-    document.getElementById("hasilVoting").style.display = "block";
-    tampilkanHasil();
+    showThankYouPopup();
   }
-}
-
-function tampilkanHasil() {
-  const hasilOsis = document.getElementById("hasilOsis");
-  const hasilMpk = document.getElementById("hasilMpk");
-  hasilOsis.innerHTML = "<h2>Hasil Voting OSIS</h2>";
-  hasilMpk.innerHTML = "<h2>Hasil Voting MPK</h2>";
-
-  ["osis", "mpk"].forEach((tipe) => {
-    const kandidatList = tipe === "osis" ? kandidatOsis : kandidatMpk;
-    const hasilContainer = tipe === "osis" ? hasilOsis : hasilMpk;
-    const totalSuara = Object.values(votingState[tipe]).reduce(
-      (a, b) => a + b,
-      0
-    );
-
-    kandidatList.forEach((k) => {
-      const suara = votingState[tipe][k.id] || 0;
-      const persentase =
-        totalSuara > 0 ? ((suara / totalSuara) * 100).toFixed(1) : 0;
-
-      const progressHTML = `
-                        <div class="progress-container">
-                            <div class="progress-info">
-                                <strong>${k.nama}</strong>
-                                <span>${suara} suara (${persentase}%)</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div 
-                                    class="progress-bar-fill" 
-                                    style="width:0%" 
-                                    data-percentage="${persentase}"
-                                ></div>
-                            </div>
-                        </div>
-                    `;
-
-      hasilContainer.innerHTML += progressHTML;
-    });
-  });
-
-  // Animasi progress bar
-  setTimeout(() => {
-    const progressBars = document.querySelectorAll(".progress-bar-fill");
-    progressBars.forEach((bar) => {
-      const percentage = bar.getAttribute("data-percentage");
-      bar.style.width = `${percentage}%`;
-    });
-  }, 100);
 }
 
 // Inisialisasi
