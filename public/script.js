@@ -1,3 +1,4 @@
+// Simpan data kandidat yang sudah ada
 const kandidatOsis = [
   {
     id: "osis1",
@@ -37,6 +38,49 @@ const kandidatMpk = [
 const votingState = { osis: {}, mpk: {} };
 let tahapSaatIni = "osis";
 
+// Fungsi untuk mengambil data suara dari database
+async function getVoteCount() {
+  try {
+    const [hasilOsis, hasilMpk] = await Promise.all([
+      fetch("/api/get-suara-osis"),
+      fetch("/api/get-suara-mpk"),
+    ]);
+
+    const dataOsis = await hasilOsis.json();
+    const dataMpk = await hasilMpk.json();
+
+    return { osis: dataOsis, mpk: dataMpk };
+  } catch (error) {
+    console.error("Error fetching vote count:", error);
+    return null;
+  }
+}
+
+// Fungsi untuk mengirim vote ke database
+async function submitVote(tipe, nomorPaslon) {
+  try {
+    const response = await fetch(`/api/submit-vote`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tipe: tipe,
+        nomor_paslon: nomorPaslon,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Vote submission failed");
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error submitting vote:", error);
+    return false;
+  }
+}
+
 function renderKandidat(kandidat, tipe) {
   const container = document.getElementById(
     `kandidat${tipe.charAt(0).toUpperCase() + tipe.slice(1)}`
@@ -47,17 +91,54 @@ function renderKandidat(kandidat, tipe) {
     const card = document.createElement("div");
     card.className = "kandidat-card";
     card.innerHTML = `
-                    <img src="${k.foto}" alt="${k.nama}">
-                    <h3>${k.nama}</h3>
-                    <p>${k.visi}</p>
-                    <button 
-                        onclick="vote('${tipe}', '${k.id}')" 
-                        class="vote-btn" 
-                        id="btn-${k.id}">Pilih
-                    </button>
-                `;
+      <img src="${k.foto}" alt="${k.nama}">
+      <h3>${k.nama}</h3>
+      <p>${k.visi}</p>
+      <button 
+        onclick="vote('${tipe}', '${k.id}')" 
+        class="vote-btn" 
+        id="btn-${k.id}">Pilih
+      </button>
+    `;
     container.appendChild(card);
   });
+}
+
+async function vote(tipe, kandidatId) {
+  if (Object.keys(votingState[tipe]).length > 0) {
+    alert("Anda sudah memberikan suara!");
+    return;
+  }
+
+  // Dapatkan nomor paslon dari ID (misalnya 'osis1' -> 1)
+  const nomorPaslon = parseInt(kandidatId.replace(/[^\d]/g, ""));
+
+  // Submit vote ke database
+  const success = await submitVote(tipe, nomorPaslon);
+
+  if (!success) {
+    alert("Maaf, terjadi kesalahan. Silakan coba lagi.");
+    return;
+  }
+
+  votingState[tipe][kandidatId] = 1;
+
+  document
+    .querySelectorAll(
+      `#kandidat${tipe.charAt(0).toUpperCase() + tipe.slice(1)} .vote-btn`
+    )
+    .forEach((btn) => {
+      btn.disabled = true;
+    });
+
+  if (tipe === "osis") {
+    document.getElementById("tahapOsis").style.display = "none";
+    document.getElementById("tahapMpk").style.display = "block";
+    tahapSaatIni = "mpk";
+  } else {
+    document.getElementById("tahapMpk").style.display = "none";
+    showThankYouPopup();
+  }
 }
 
 function showThankYouPopup() {
@@ -85,32 +166,6 @@ function showThankYouPopup() {
       window.location.href = "index.html";
     }
   }, 1000);
-}
-
-function vote(tipe, kandidatId) {
-  if (Object.keys(votingState[tipe]).length > 0) {
-    alert("Anda sudah memberikan suara!");
-    return;
-  }
-
-  votingState[tipe][kandidatId] = 1;
-
-  document
-    .querySelectorAll(
-      `#kandidat${tipe.charAt(0).toUpperCase() + tipe.slice(1)} .vote-btn`
-    )
-    .forEach((btn) => {
-      btn.disabled = true;
-    });
-
-  if (tipe === "osis") {
-    document.getElementById("tahapOsis").style.display = "none";
-    document.getElementById("tahapMpk").style.display = "block";
-    tahapSaatIni = "mpk";
-  } else {
-    document.getElementById("tahapMpk").style.display = "none";
-    showThankYouPopup();
-  }
 }
 
 renderKandidat(kandidatOsis, "osis");
